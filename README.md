@@ -29,3 +29,6 @@ curl http://127.0.0.1:5000/api/v1/network/config/backup
 
 - 指定日期获取配置差异
 ![img](docs/diff.png)
+
+- 备份任务通知
+![img](docs/webchat.jpg)
