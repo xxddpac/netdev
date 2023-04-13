@@ -29,16 +29,21 @@ curl http://127.0.0.1:5000/api/v1/network/baseline/check
 ```
 
 - 查询备份成功设备详情
+
 ![img](docs/list.png)
 
 - 查询指定设备最新IP配置
+
 ![img](docs/query.png)
 
 - 指定日期获取配置差异
+
 ![img](docs/diff.png)
 
 - 备份任务通知
+
 ![img](docs/webchat.png)
 
 - 安全基线扫描
+
 ![img](docs/baseline.png)
