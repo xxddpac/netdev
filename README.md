@@ -17,7 +17,7 @@ curl http://127.0.0.1:5000/api/v1/network/config/backup
 
 ```
 
-- (计划任务)触发异步备份任务(推荐)
+- (计划任务)触发异步备份任务
 ```bash
 40 0 * * * curl http://127.0.0.1:5000/api/v1/network/config/backup
 
