@@ -1,9 +1,9 @@
-import datetime, os, re
+import datetime, os, re, difflib
 from fastapi import FastAPI, BackgroundTasks
 from network.backup import run
 from utils import parse_config
 from log import logger
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 
 app = FastAPI()
 
@@ -17,9 +17,24 @@ async def backup(background_tasks: BackgroundTasks):
 
 # 根据日期获取相同设备配置差异对比
 @app.get('/api/v1/network/config/diff')
-async def diff():
-    # todo
-    return {'msg': 'success', 'code': 200, 'data': None}
+async def diff(_date: str, date: str, host: str):
+    filename = host + '.txt'
+    path = parse_config()['config_path']
+    if filename not in os.listdir('%s%s' % (path, _date)):
+        logger('api for diff').error('config with %s not found' % host)
+        return {'msg': 'config with %s not found' % host, 'code': 400, 'data': None}
+
+    if filename not in os.listdir('%s%s' % (path, date)):
+        logger('api for diff').error('config with %s not found' % host)
+        return {'msg': 'config with %s not found' % host, 'code': 400, 'data': None}
+    with open('%s%s/%s' % (path, _date, filename), encoding='utf-8') as f:
+        _date_config = f.read().split('\n')
+    with open('%s%s/%s' % (path, date, filename), encoding='utf-8') as f:
+        date_config = f.read().split('\n')
+    diff = difflib.HtmlDiff()
+    htmlContent = diff.make_file(_date_config, date_config)
+    response = Response(htmlContent)
+    return response
 
 
 # 获取设备最新配置
