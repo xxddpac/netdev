@@ -20,21 +20,18 @@ async def backup(background_tasks: BackgroundTasks):
 async def diff(_date: str, date: str, host: str):
     filename = host + '.txt'
     path = parse_config()['config_path']
-    if filename not in os.listdir('%s%s' % (path, _date)):
-        logger('api for diff').error('config with %s not found' % host)
-        return {'msg': 'config with %s not found' % host, 'code': 400, 'data': None}
-
-    if filename not in os.listdir('%s%s' % (path, date)):
-        logger('api for diff').error('config with %s not found' % host)
-        return {'msg': 'config with %s not found' % host, 'code': 400, 'data': None}
-    with open('%s%s/%s' % (path, _date, filename), encoding='utf-8') as f:
-        _date_config = f.read().split('\n')
-    with open('%s%s/%s' % (path, date, filename), encoding='utf-8') as f:
-        date_config = f.read().split('\n')
-    diff = difflib.HtmlDiff()
-    htmlContent = diff.make_file(_date_config, date_config)
-    response = Response(htmlContent)
-    return response
+    try:
+        with open('%s%s/%s' % (path, _date, filename), encoding='utf-8') as f:
+            _date_config = f.read().split('\n')
+        with open('%s%s/%s' % (path, date, filename), encoding='utf-8') as f:
+            date_config = f.read().split('\n')
+        diff = difflib.HtmlDiff()
+        htmlContent = diff.make_file(_date_config, date_config)
+        response = Response(htmlContent)
+        return response
+    except Exception as err:
+        logger('api for diff').error(err)
+        return {'msg': err, 'code': 400, 'data': None}
 
 
 # 获取设备最新配置
@@ -43,7 +40,11 @@ async def query(host: str):
     filename = host + '.txt'
     path = parse_config()['config_path']
     now = datetime.datetime.now().strftime('%Y-%m-%d')
-    files = os.listdir('%s%s' % (path, now))
+    try:
+        files = os.listdir('%s%s' % (path, now))
+    except Exception as err:
+        logger('api for query').error(err)
+        return {'msg': err, 'code': 400, 'data': None}
     if filename not in files:
         logger('api for query').error('config with %s not found' % host)
         return {'msg': 'config with %s not found' % host, 'code': 400, 'data': None}
@@ -56,7 +57,11 @@ async def list():
     pattern = r'\d*[.]\d*[.]\d*[.]\d*'
     path = parse_config()['config_path']
     now = datetime.datetime.now().strftime('%Y-%m-%d')
-    files = os.listdir('%s%s' % (path, now))
+    try:
+        files = os.listdir('%s%s' % (path, now))
+    except Exception as err:
+        logger('api for query').error(err)
+        return {'msg': err, 'code': 400, 'data': None}
     result = [re.search(pattern, item).group() for item in files]
     return {'msg': 'success', 'code': 200, 'data': {
         'total': len(result),

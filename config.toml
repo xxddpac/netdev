@@ -7,6 +7,11 @@ log_path = "/var/log/network.log"
 #并发线程数
 max_workers = 10
 
+#企业微信机器人webhook地址
+[webhook]
+enable = false #默认fasle不发送企业微信通知,为true则发送
+url = ""
+
 #设备信息
 ############################################################################
 # 支持web api设备command可为空,如:飞塔/山石/checkpoint/poloalto防火墙等        #

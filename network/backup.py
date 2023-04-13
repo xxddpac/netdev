@@ -7,9 +7,13 @@ from netmiko import ConnectHandler
 from queue import Queue
 from .fortigate import FortiGate
 from log import logger
+from notify import webchat, mail
+
+failed_list = []
 
 
 def run():
+    failed_list.clear()
     config = parse_config()
     time_now = datetime.datetime.now().strftime('%Y-%m-%d')
     path = '%s%s' % (config['config_path'], time_now)
@@ -24,6 +28,13 @@ def run():
         t.start()
     q.join()
 
+    if len(failed_list) == 0:
+        logger('backup').info('success backup all devices')
+        return
+    # 仅备份失败发送通知
+    if config['webhook']['enable']:
+        webchat.send(failed_list)
+
 
 def do(q):
     while True:
@@ -37,7 +48,6 @@ def do(q):
         path = info['path']
         try:
             if vendor == 'fortigate':
-                pass
                 FortiGate(host, username, password, path, port=port).save()
             else:
                 connect = ConnectHandler(
@@ -52,6 +62,7 @@ def do(q):
                 connect.disconnect()
                 save(path, host, result)
         except Exception as err:
+            failed_list.append(host)
             logger('config_backup').error('host:%s error:%s\n' % (host, err))
         finally:
             q.task_done()
