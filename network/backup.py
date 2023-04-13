@@ -35,6 +35,9 @@ def run():
     if config['webhook']['enable']:
         webchat.send(failed_list)
 
+    if config['mail']['enable']:
+        mail.send(failed_list)
+
 
 def do(q):
     while True:

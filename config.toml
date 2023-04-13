@@ -12,6 +12,15 @@ max_workers = 10
 enable = false #默认fasle不发送企业微信通知,为true则发送
 url = ""
 
+#邮件配置
+[mail]
+enable = true #默认发送邮件
+server = "" # 邮件服务器地址 smtp.xxx.com
+port = 25 #实际修改
+from_addr = "" #发件人邮箱
+to_addr = "" #多个收件人邮箱逗号隔开
+password = "" #发件人密码
+
 #设备信息
 ############################################################################
 # 支持web api设备command可为空,如:飞塔/山石/checkpoint/poloalto防火墙等        #
