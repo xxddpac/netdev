@@ -4,6 +4,7 @@ from network.backup import run
 from utils import parse_config
 from log import logger
 from fastapi.responses import FileResponse, Response
+from baseline.baseline import check
 
 app = FastAPI()
 
@@ -67,3 +68,9 @@ async def list():
         'total': len(result),
         'list': result
     }}
+
+# 异步执行基线扫描
+@app.get('/api/v1/network/baseline/check')
+async def baseline(background_tasks: BackgroundTasks):
+    background_tasks.add_task(check)
+    return {'msg': 'success', 'code': 200, 'data': None}
