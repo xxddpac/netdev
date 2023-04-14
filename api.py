@@ -69,8 +69,26 @@ async def list():
         'list': result
     }}
 
+
 # 异步执行基线扫描
 @app.get('/api/v1/network/baseline/check')
 async def baseline(background_tasks: BackgroundTasks):
     background_tasks.add_task(check)
     return {'msg': 'success', 'code': 200, 'data': None}
+
+
+# 下载设备最新配置
+@app.get('/api/v1/network/config/download')
+async def query(host: str):
+    filename = host + '.txt'
+    path = parse_config()['config_path']
+    now = datetime.datetime.now().strftime('%Y-%m-%d')
+    try:
+        files = os.listdir('%s%s' % (path, now))
+    except Exception as err:
+        logger('api for download').error(err)
+        return {'msg': err, 'code': 400, 'data': None}
+    if filename not in files:
+        logger('api for download').error('config with %s not found' % host)
+        return {'msg': 'config with %s not found' % host, 'code': 400, 'data': None}
+    return FileResponse('%s/%s/%s' % (path, now, filename), media_type='application/octet-stream', filename=filename)
