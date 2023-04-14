@@ -1,5 +1,24 @@
 # 基于fastapi实现的简单网络自动化后端服务
 
+为了方便安装部署，尽量减少外部中间件的引入，如数据库、缓存等，越简单越好，如果需要持久化存储对接内部平台，则自行引入。
+## 安装（两种方式,虚拟环境或docker）
+
+- 虚拟环境
+```bash
+pip install virtualenv 
+virtualenv venv --python=python3.8
+source venv/bin/activate
+git clone git@github.com:xxddpac/netdev.git
+cd netdev
+pip install -r requirements.txt -i https://pypi.douban.com/simple/
+python main.py
+```
+
+- Docker(确保已安装docker)
+```bash
+todo
+
+```
 
 ## 支持功能
 
