@@ -74,3 +74,11 @@ command = ""
 username = "root"
 password = "password"
 port = "8443"
+
+[[devices]]
+host = "1.1.1.7"
+vendor = "juniper_junos" # junos设备
+command = "show configuration"
+username = "root"
+password = "password"
+port = "22"
