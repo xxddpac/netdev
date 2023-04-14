@@ -101,4 +101,4 @@ async def stats():
     result = dict()
     for i in devices:
         result[i['vendor']] = result.get(i['vendor'], 0) + 1
-    return {'msg': 'success', 'code': 200, 'data': result}
+    return {'msg': 'success', 'code': 200, 'data': {**result, 'total': len(devices)}}
