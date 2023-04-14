@@ -17,7 +17,7 @@ curl http://127.0.0.1:5000/api/v1/network/config/backup
 
 ```
 
-- (计划任务)触发异步备份任务
+- (计划任务每天)触发异步备份任务
 ```bash
 40 0 * * * curl http://127.0.0.1:5000/api/v1/network/config/backup
 
@@ -47,3 +47,7 @@ curl http://127.0.0.1:5000/api/v1/network/baseline/check
 - 安全基线扫描
 
 ![img](docs/baseline.png)
+
+- 最新配置下载
+
+![img](docs/download.png)
