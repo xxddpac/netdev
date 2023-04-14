@@ -79,7 +79,7 @@ async def baseline(background_tasks: BackgroundTasks):
 
 # 下载设备最新配置
 @app.get('/api/v1/network/config/download')
-async def query(host: str):
+async def download(host: str):
     filename = host + '.txt'
     path = parse_config()['config_path']
     now = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -92,3 +92,13 @@ async def query(host: str):
         logger('api for download').error('config with %s not found' % host)
         return {'msg': 'config with %s not found' % host, 'code': 400, 'data': None}
     return FileResponse('%s/%s/%s' % (path, now, filename), media_type='application/octet-stream', filename=filename)
+
+
+# 获取设备类型统计
+@app.get('/api/v1/network/stats')
+async def stats():
+    devices = parse_config()['devices']
+    result = dict()
+    for i in devices:
+        result[i['vendor']] = result.get(i['vendor'], 0) + 1
+    return {'msg': 'success', 'code': 200, 'data': result}

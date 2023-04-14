@@ -82,3 +82,19 @@ command = "show configuration"
 username = "root"
 password = "password"
 port = "22"
+
+[[devices]]
+host = "1.1.1.8"
+vendor = "juniper_junos" # junos设备
+command = "show configuration"
+username = "root"
+password = "password"
+port = "22"
+
+[[devices]]
+host = "1.1.1.9"
+vendor = "cisco_ios" #思科IOS设备
+command = "show run"
+username = "root"
+password = "password"
+port = "22"
