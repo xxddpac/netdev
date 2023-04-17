@@ -8,6 +8,9 @@ from baseline.baseline import check
 
 app = FastAPI()
 
+@app.get('/api/v1/ping')
+async def ping():
+    return {'msg': 'success', 'code': 200, 'data': 'pong'}
 
 # 异步执行备份任务
 @app.get('/api/v1/network/config/backup')
