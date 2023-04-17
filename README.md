@@ -1,4 +1,4 @@
-# 基于fastapi实现的简单网络自动化后端服务
+# 基于fastapi实现简单网络自动化后端服务
 
 - 为了方便安装部署，尽量减少外部中间件的引入，如数据库、缓存等，如果需要持久化存储对接内部平台，则自行引入
 - config.toml作为项目配置文件，包括设备的相关所需信息(管理地址、账号、密码、设备类型、备份路径...)
@@ -18,8 +18,19 @@ python main.py
 
 - Docker(确保已安装docker)
 ```bash
-todo
+git clone git@github.com:xxddpac/netdev.git
+cd netdev
+docker build -t netdev .
+docker images
+docker run -d -p 5000:5000 -v /data/network:/data/network -v /var/log:/var/log --name 'networkAutomationServiceWithFastapi' netdev
+docker ps -a
+```
 
+## 验证
+```bash
+curl http://X.X.X.X:5000/api/v1/ping
+
+# 返回 {'msg': 'success', 'code': 200, 'data': 'pong'} 说明服务已正常启动
 ```
 
 ## 支持功能
@@ -35,19 +46,19 @@ todo
 
 - (手动)触发异步备份任务
 ```bash
-curl http://127.0.0.1:5000/api/v1/network/config/backup
+curl http://X.X.X.X:5000/api/v1/network/config/backup
 
 ```
 
 - (计划任务每天)触发异步备份任务
 ```bash
-40 0 * * * curl http://127.0.0.1:5000/api/v1/network/config/backup
+40 0 * * * curl http://X.X.X.X:5000/api/v1/network/config/backup
 
 ```
 
 - 触发异步基线扫描任务(扫描结果.xlsx存放baseline文件夹下)
 ```bash
-curl http://127.0.0.1:5000/api/v1/network/baseline/check
+curl http://X.X.X.X:5000/api/v1/network/baseline/check
 ```
 
 - 查询备份成功设备详情
