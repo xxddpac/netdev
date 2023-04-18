@@ -6,6 +6,7 @@ from utils import parse_config, save
 from netmiko import ConnectHandler
 from queue import Queue
 from .fortigate import FortiGate
+from .hillstone import Hillstone
 from log import logger
 from notify import webchat, mail
 
@@ -52,6 +53,8 @@ def do(q):
         try:
             if vendor == 'fortigate':
                 FortiGate(host, username, password, path, port=port).save()
+            elif vendor == 'hillstone':
+                Hillstone(host, username, password, path, port=port).save()
             else:
                 connect = ConnectHandler(
                     device_type=vendor,

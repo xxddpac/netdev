@@ -1,8 +1,9 @@
-import requests,urllib3
+import requests, urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-class FortiGate:
+
+class FortiGate(object):
     def __init__(self, ipaddr, username, password, path, timeout=10, port='443', verify=False):
 
         self.ipaddr = ipaddr

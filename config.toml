@@ -98,3 +98,11 @@ command = "show run"
 username = "root"
 password = "password"
 port = "22"
+
+[[devices]]
+host = "1.1.1.10"
+vendor = "hillstone" #山石防火墙
+command = ""
+username = "root"
+password = "password"
+port = "443"
