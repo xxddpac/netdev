@@ -1,7 +1,8 @@
-pandas==1.3.3
 requests==2.24.0
-netmiko==4.1.2
 urllib3==1.25.11
-fastapi==0.95.0
+netmiko==4.1.2
+pandas==1.3.3
+fastapi==0.95.1
 tomli==2.0.1
 uvicorn==0.21.1
+pytest==7.3.1
