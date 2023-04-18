@@ -41,6 +41,7 @@ curl http://X.X.X.X:5000/api/v1/ping
 - 配置历史对比(根据不同日期备份配置展示差异)
 - 配置下载、配置查询等其他API服务
 - 设备类型统计
+- mac --> interface --> vlan --> switch 映射关系查询(方便运维快速定位终端mac地址接入在全网哪台交换机接口下) todo
 
 ## 功能展示
 
@@ -50,7 +51,7 @@ curl http://X.X.X.X:5000/api/v1/network/config/backup
 
 ```
 
-- (计划任务每天)触发异步备份任务
+- (计划任务)触发异步备份任务
 ```bash
 40 0 * * * curl http://X.X.X.X:5000/api/v1/network/config/backup
 
