@@ -6,21 +6,26 @@ from log import logger
 from fastapi.responses import FileResponse, Response
 from baseline.baseline import check
 
-app = FastAPI()
+app = FastAPI(
+    title='NETDEV API DOCS',
+    description='netdev',
+    version='1.0'
+)
 
-@app.get('/api/v1/ping')
+# 健康检查
+@app.get('/api/v1/ping',summary='健康检查',description='健康检查',tags=['netdev'])
 async def ping():
     return {'msg': 'success', 'code': 200, 'data': 'pong'}
 
 # 异步执行备份任务
-@app.get('/api/v1/network/config/backup')
+@app.get('/api/v1/network/config/backup',summary='执行备份任务',description='执行备份任务',tags=['netdev'])
 async def backup(background_tasks: BackgroundTasks):
     background_tasks.add_task(run)
     return {'msg': 'success', 'code': 200, 'data': None}
 
 
 # 根据日期获取相同设备配置差异对比
-@app.get('/api/v1/network/config/diff')
+@app.get('/api/v1/network/config/diff',summary='根据日期查询配置差异',description='根据日期查询配置差异',tags=['netdev'])
 async def diff(_date: str, date: str, host: str):
     filename = host + '.txt'
     path = parse_config()['config_path']
@@ -39,7 +44,7 @@ async def diff(_date: str, date: str, host: str):
 
 
 # 获取设备最新配置
-@app.get('/api/v1/network/config/query')
+@app.get('/api/v1/network/config/query',summary='根据IP查询设备当天配置',description='根据IP查询设备当天配置',tags=['netdev'])
 async def query(host: str):
     filename = host + '.txt'
     path = parse_config()['config_path']
@@ -56,7 +61,7 @@ async def query(host: str):
 
 
 # 获取最新备份成功设备(ip)列表
-@app.get('/api/v1/network/config/list')
+@app.get('/api/v1/network/config/list',summary='查询当天备份成功列表统计',description='查询当天备份成功列表统计',tags=['netdev'])
 async def list():
     pattern = r'\d*[.]\d*[.]\d*[.]\d*'
     path = parse_config()['config_path']
@@ -74,14 +79,14 @@ async def list():
 
 
 # 异步执行基线扫描
-@app.get('/api/v1/network/baseline/check')
+@app.get('/api/v1/network/baseline/check',summary='执行基线扫描任务',description='执行基线扫描任务',tags=['netdev'])
 async def baseline(background_tasks: BackgroundTasks):
     background_tasks.add_task(check)
     return {'msg': 'success', 'code': 200, 'data': None}
 
 
 # 下载设备最新配置
-@app.get('/api/v1/network/config/download')
+@app.get('/api/v1/network/config/download',summary='根据IP下载设备当天备份配置',description='根据IP下载设备当天备份配置',tags=['netdev'])
 async def download(host: str):
     filename = host + '.txt'
     path = parse_config()['config_path']
@@ -98,7 +103,7 @@ async def download(host: str):
 
 
 # 获取设备类型统计
-@app.get('/api/v1/network/stats')
+@app.get('/api/v1/network/stats',summary='查询设备类型统计',description='查询设备类型统计',tags=['netdev'])
 async def stats():
     devices = parse_config()['devices']
     result = dict()

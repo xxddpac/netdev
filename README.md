@@ -82,10 +82,9 @@ curl http://X.X.X.X:5000/api/v1/network/baseline/check
 
 ![img](docs/baseline.png)
 
-- 最新配置下载
 
-![img](docs/download.png)
-
-- 设备类型统计
-
-![img](docs/stats.png)
+## 详情参考API接口文档
+```bash
+http://X.X.X.X:5000/docs
+```
+![img](docs/swagger.png)
