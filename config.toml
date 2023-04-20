@@ -123,3 +123,11 @@ username = "root"
 password = "password"
 expert_password = "expert_password" #进入专家模式密码
 port = "22"
+
+[[devices]]
+host = "1.1.1.12"
+vendor = "paloalto" #PA防火墙
+command = ""
+username = "root"
+password = "password"
+port = "443"
