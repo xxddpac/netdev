@@ -7,6 +7,7 @@ from netmiko import ConnectHandler
 from queue import Queue
 from .fortigate import FortiGate
 from .hillstone import Hillstone
+from .checkpoint import Checkpoint
 from log import logger
 from notify import webchat, mail
 
@@ -55,6 +56,9 @@ def do(q):
                 FortiGate(host, username, password, path, port=port).save()
             elif vendor == 'hillstone':
                 Hillstone(host, username, password, path, port=port).save()
+            elif vendor == 'checkpoint':
+                with Checkpoint(host, username, password, path, port=port) as cp:
+                    cp.save()
             else:
                 connect = ConnectHandler(
                     device_type=vendor,

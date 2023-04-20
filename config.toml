@@ -7,10 +7,10 @@ log_path = "/var/log/network.log"
 #并发线程数
 max_workers = 10
 
-#企业微信机器人webhook地址
+#企业微信配置
 [webhook]
 enable = false #默认fasle不发送企业微信通知,为true则发送
-url = ""
+url = "" #企业微信机器人webhook地址
 
 #邮件配置
 [mail]
@@ -20,6 +20,14 @@ port = 25 #实际修改
 from_addr = "" #发件人邮箱
 to_addr = "" #多个收件人邮箱逗号隔开
 password = "" #发件人密码
+
+#scp配置
+#该配置用于checkpoint防火墙备份核心配置用,如无checkpoint防火墙,则忽略.
+#建议使用部署服务本机作为scp,scp将拷贝配置文件到config_path定义的备份路径下
+[scp]
+host = ""
+user = ""
+pass = ""
 
 #设备信息
 ############################################################################
@@ -106,3 +114,12 @@ command = ""
 username = "root"
 password = "password"
 port = "443"
+
+[[devices]]
+host = "1.1.1.11"
+vendor = "checkpoint" #cp防火墙
+command = ""
+username = "root"
+password = "password"
+expert_password = "expert_password" #进入专家模式密码
+port = "22"

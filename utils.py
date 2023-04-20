@@ -1,4 +1,4 @@
-import tomli, datetime, os, base64
+import tomli, datetime, base64
 import pandas as pd
 
 
@@ -14,7 +14,6 @@ def save(path, ip, result):
 
 def write_to_xlsx(result):
     df = pd.DataFrame.from_dict(result)
-    os.path.join(os.path.abspath(os.path.join(os.getcwd(), "..")), '')
     df.to_excel('./baseline/baseline_%s.xlsx' % datetime.datetime.now().strftime('%Y-%m-%d'))
 
 
