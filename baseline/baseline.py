@@ -6,6 +6,7 @@ from .rule import scan_template
 pattern = r'\d*[.]\d*[.]\d*[.]\d*'
 result = []
 
+
 def get_vendor(devices, host) -> str:
     for device in devices:
         if host == device['host']:
@@ -23,7 +24,8 @@ def scan(host, vendor, config):
     for item in scan_template:
         if item['vendor'] != vendor:
             continue
-        if not bool(re.search(item['rule'], config)):
+        is_pass = bool(re.search(item['rule'], config))
+        if not is_pass or (is_pass and item['name'] == 'telnet'):
             result.append({
                 '设备地址': host, '设备类型': vendor, '检查项': item['name'],
                 '检查项描述': item['desc'], '风险级别': item['level'], '检测结果': '未通过',
@@ -43,8 +45,12 @@ def check():
         logger('baseline').error(err)
         return
     for file in files:
-        host = re.search(pattern, file).group()
-        vendor = get_vendor(devices, host)
-        device_config = get_config(file, path, now)
-        scan(host, vendor, device_config)
+        try:
+            host = re.search(pattern, file).group()
+            vendor = get_vendor(devices, host)
+            device_config = get_config(file, path, now)
+            scan(host, vendor, device_config)
+        except Exception as err:
+            logger('baseline').error('%s-->%s' % (file, err))
+            continue
     write_to_xlsx(result)
