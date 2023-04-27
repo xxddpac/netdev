@@ -41,6 +41,7 @@ curl http://X.X.X.X:5000/api/v1/ping
 - 配置历史对比(根据不同日期备份配置展示差异)
 - 配置下载、配置查询等其他API服务
 - 设备类型统计
+- 同步网络设备相关CVE漏洞,通过邮件发送漏洞预警便于及时跟进修复
 - mac --> interface --> vlan --> switch 映射关系查询(方便运维快速定位终端mac地址接入在全网哪台交换机接口下) todo
 
 ## 功能展示
@@ -60,6 +61,11 @@ curl http://X.X.X.X:5000/api/v1/network/config/backup
 - 触发异步基线扫描任务(扫描结果.xlsx存放baseline文件夹下)
 ```bash
 curl http://X.X.X.X:5000/api/v1/network/baseline/check
+```
+
+- (计划任务)触发CVE漏洞同步任务
+```bash
+0 * * * * curl http://X.X.X.X:5000/api/v1/network/cve
 ```
 
 - 查询备份成功设备详情
