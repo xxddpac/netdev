@@ -5,22 +5,19 @@ from utils import parse_config
 from log import logger
 
 
-def send(failed_list):
-    now = datetime.datetime.now().strftime('%Y-%m-%d')
+def send(subject, body):
     config = parse_config()
     fromaddr = config['mail']['from_addr']
     toaddr = config['mail']['to_addr']
     server = config['mail']['server']
     port = config['mail']['port']
-    devices = config['devices']
     password = config['mail']['password']
     try:
         msg = MIMEMultipart()
         msg['From'] = fromaddr
         msg['To'] = toaddr
-        msg['Subject'] = "网络自动化备份任务通知"
-        body = "备份日期:%s\n备份设备总数:%d\n备份失败总数:%d\n备份失败设备列表:%s" % (
-            now, len(devices), len(failed_list), failed_list)
+        msg['Subject'] = subject
+        body = body
         msg.attach(MIMEText(body, 'plain'))
         server = smtplib.SMTP(server, port)
         server.ehlo()

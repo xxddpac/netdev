@@ -39,7 +39,10 @@ def run():
         webchat.send(failed_list)
 
     if config['mail']['enable']:
-        mail.send(failed_list)
+        subject = '网络自动化备份任务通知'
+        body = '备份日期:%s\n备份设备总数:%d\n备份失败总数:%d\n备份失败设备列表:%s' % (
+            time_now, len(config['devices']), len(failed_list), failed_list)
+        mail.send(subject, body)
 
 
 def do(q):
