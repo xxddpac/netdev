@@ -31,3 +31,13 @@ class NetDevException(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
+
+
+def paginate(page_num, page_size, list_length):
+    start = (page_num - 1) * page_size
+    if start > list_length:
+        start = list_length
+    end = start + page_size
+    if end > list_length:
+        end = list_length
+    return start, end

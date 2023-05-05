@@ -1,11 +1,12 @@
-import datetime, os, re, difflib
+import datetime, os, re, difflib, math
 from fastapi import FastAPI, BackgroundTasks
 from network.backup import run
-from utils import parse_config
+from utils import parse_config, paginate
 from log import logger
 from fastapi.responses import FileResponse, Response
 from baseline.baseline import check
 from cve.cve import sync
+from pandas import *
 
 app = FastAPI(
     title='NETDEV API DOCS',
@@ -49,8 +50,8 @@ async def diff(_date: str, date: str, host: str):
         response = Response(htmlContent)
         return response
     except Exception as err:
-        logger('api for diff').error(err)
-        return {'msg': err, 'code': 400, 'data': None}
+        logger('api for diff').error(str(err))
+        return {'msg': str(err), 'code': 400, 'data': None}
 
 
 # 获取设备最新配置
@@ -62,8 +63,8 @@ async def query(host: str):
     try:
         files = os.listdir('%s%s' % (path, now))
     except Exception as err:
-        logger('api for query').error(err)
-        return {'msg': err, 'code': 400, 'data': None}
+        logger('api for query').error(str(err))
+        return {'msg': str(err), 'code': 400, 'data': None}
     if filename not in files:
         logger('api for query').error('config with %s not found' % host)
         return {'msg': 'config with %s not found' % host, 'code': 400, 'data': None}
@@ -79,8 +80,8 @@ async def list():
     try:
         files = os.listdir('%s%s' % (path, now))
     except Exception as err:
-        logger('api for query').error(err)
-        return {'msg': err, 'code': 400, 'data': None}
+        logger('api for query').error(str(err))
+        return {'msg': str(err), 'code': 400, 'data': None}
     result = [re.search(pattern, item).group() for item in files]
     return {'msg': 'success', 'code': 200, 'data': {
         'total': len(result),
@@ -104,8 +105,8 @@ async def download(host: str):
     try:
         files = os.listdir('%s%s' % (path, now))
     except Exception as err:
-        logger('api for download').error(err)
-        return {'msg': err, 'code': 400, 'data': None}
+        logger('api for download').error(str(err))
+        return {'msg': str(err), 'code': 400, 'data': None}
     if filename not in files:
         logger('api for download').error('config with %s not found' % host)
         return {'msg': 'config with %s not found' % host, 'code': 400, 'data': None}
@@ -120,3 +121,29 @@ async def stats():
     for i in devices:
         result[i['vendor']] = result.get(i['vendor'], 0) + 1
     return {'msg': 'success', 'code': 200, 'data': {**result, 'total': len(devices)}}
+
+
+# 获取设备资产信息
+@app.get('/api/v1/network/asset', summary='获取设备资产信息', description='获取设备资产信息', tags=['netdev'])
+async def asset(page: int = 1, size: int = 10):
+    path = parse_config()['config_path']
+    now = datetime.datetime.now().strftime('%Y-%m-%d')
+    try:
+        xls = ExcelFile('%s%s/asset.xlsx' % (path, now))
+        df = xls.parse(xls.sheet_names[0])
+        df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+        res = df.to_dict('records')
+        start, end = paginate(page, size, len(res))
+        return {
+            'msg': 'success',
+            'code': 200,
+            'data': {
+                'total': len(res),
+                'page': page,
+                'size': size,
+                'pages': int(math.ceil(len(res) / size)),
+                'items': res[start:end]
+            }
+        }
+    except Exception as err:
+        return {'msg': str(err), 'code': 400, 'data': None}
