@@ -23,7 +23,11 @@ def parse(ip, vendor, data):
     elif vendor == 'cisco_asa':
         pass
     elif vendor == 'cisco_nxos':
-        pass
+        hostname = re.compile(r'Device name.*?(\w.+)').findall(data)
+        version = re.compile(r'System version.*?(\w.+)').findall(data)
+        sn = re.compile(r'Processor Board ID.*?(\w+)').findall(data)
+        image = re.compile(r'[n|N]XOS image file is.*?(\w.+)').findall(data)
+        model = re.compile(r'(cisco.*?[n|N]exus.+)').findall(data)
     elif vendor == 'huawei':
         pass
     elif vendor == 'hillstone':
