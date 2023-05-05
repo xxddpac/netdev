@@ -53,4 +53,5 @@ def check():
         except Exception as err:
             logger('baseline').error('%s-->%s' % (file, err))
             continue
-    write_to_xlsx(result)
+    if len(result) != 0:
+        write_to_xlsx(result, 'baseline')

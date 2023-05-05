@@ -2,7 +2,7 @@ import datetime
 import os
 import threading
 
-from utils import parse_config, save
+from utils import parse_config, save, write_to_xlsx
 from netmiko import ConnectHandler
 from queue import Queue
 from .fortigate import FortiGate
@@ -11,12 +11,19 @@ from .checkpoint import Checkpoint
 from .paloalto import Paloalto
 from log import logger
 from notify import webchat, mail
+from .asset import parse, asset_list
 
 failed_list = []
 
+asset_command = {
+    'cisco_ios': 'show ver',
+    'cisco_nxos': 'show ver',
+    'cisco_asa': 'show ver',
+}
 
 def run():
     failed_list.clear()
+    asset_list.clear()
     config = parse_config()
     time_now = datetime.datetime.now().strftime('%Y-%m-%d')
     path = '%s%s' % (config['config_path'], time_now)
@@ -30,7 +37,8 @@ def run():
         t.setDaemon(True)
         t.start()
     q.join()
-
+    if len(asset_list) != 0:
+        write_to_xlsx(asset_list, 'asset')
     if len(failed_list) == 0:
         logger('backup').info('success backup all devices')
         return
@@ -75,7 +83,9 @@ def do(q):
                     port=port
                 )
                 result = connect.send_command(command, read_timeout=160)  # 读取配置超时时间
+                asset = connect.send_command(asset_command[vendor], read_timeout=160)
                 connect.disconnect()
+                parse(host, vendor, asset)
                 save(path, host, result)
         except Exception as err:
             failed_list.append(host)

@@ -12,12 +12,12 @@ def save(path, ip, result):
         f.writelines(result)
 
 
-def write_to_xlsx(result):
+def write_to_xlsx(result, typ):
     config = parse_config()
     time_now = datetime.datetime.now().strftime('%Y-%m-%d')
     path = '%s%s' % (config['config_path'], time_now)
     df = pd.DataFrame.from_dict(result)
-    df.to_excel('%s/baseline.xlsx' % path)
+    df.to_excel('%s/%s.xlsx' % (path, typ))
 
 
 def encode(string):
