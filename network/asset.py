@@ -21,7 +21,13 @@ def parse(ip, vendor, data):
         image = re.compile(r'System\simage\sfile\sis\s"([^ "]+)').findall(data)
         model = re.compile(r'[Cc]isco\s(\S+).*memory.').findall(data)
     elif vendor == 'cisco_asa':
-        pass
+        hostname = re.compile(r'(.*?)[ ]*up[ ]*\d.*?').findall(data)
+        if len(hostname) == 2:
+            hostname.pop(1)
+        version = re.compile(r'Cisco Adaptive Security.*?Version[ ]*(\w.+)').findall(data)
+        sn = re.compile(r'Serial Number.*?(\w+)').findall(data)
+        image = re.compile(r'System image.*?"(.+)"').findall(data)
+        model = re.compile(r'Hardware:[ ]*(\w+),').findall(data)
     elif vendor == 'cisco_nxos':
         hostname = re.compile(r'Device name.*?(\w.+)').findall(data)
         version = re.compile(r'System version.*?(\w.+)').findall(data)
