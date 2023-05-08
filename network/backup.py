@@ -16,10 +16,12 @@ from .asset import parse, asset_list
 failed_list = []
 
 asset_command = {
-    'cisco_ios': 'show ver',
-    'cisco_nxos': 'show ver',
-    'cisco_asa': 'show ver',
+    'cisco_ios': ['show ver'],
+    'cisco_nxos': ['show ver'],
+    'cisco_asa': ['show ver'],
+    'hp_comware': ['dis cu | in sysname', 'dis version', 'dis dev man'],
 }
+
 
 def run():
     failed_list.clear()
@@ -83,7 +85,9 @@ def do(q):
                     port=port
                 )
                 result = connect.send_command(command, read_timeout=160)  # 读取配置超时时间
-                asset = connect.send_command(asset_command[vendor], read_timeout=160)
+                asset = ''
+                for _command in asset_command[vendor]:
+                    asset += '%s\n' % connect.send_command(_command, read_timeout=160)
                 connect.disconnect()
                 parse(host, vendor, asset)
                 save(path, host, result)
