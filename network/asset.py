@@ -41,10 +41,21 @@ def hp_comware_parse(data):
     hostname = re.compile(r'sysname[ ]*(\S+)').findall(data)
     version = re.compile(r'System image version:.*?(\d.+)').findall(data)
     sn = re.compile(r'DEVICE_SERIAL_NUMBER.*?[:][ ]*(.+)').findall(data)
-    if len(sn) != 0:
+    if len(sn) > 1:
         sn = [sn[0]]
     image = re.compile(r'System image:[ ]*(.+)').findall(data)
     model = re.compile(r'H3C[ ]*(\S+).*?uptime').findall(data)
+    return hostname, version, sn, image, model
+
+
+def huawei_parse(data):
+    hostname = re.compile(r'sysname[ ]*(\S+)').findall(data)
+    version = re.compile(r'VRP.*?software.*?Version[ ]*(\S+)[ ]*[(]').findall(data)
+    sn = re.compile(r'.*?[-].*?(\S+)[ ]*\d{4}[-]\d{2}[-]\d{2}').findall(data)
+    if len(sn) > 1:
+        sn = [sn[0]]
+    image = re.compile(r'VRP.*?software.*?Version[ ]*(.+)').findall(data)
+    model = re.compile(r'HUAWEI[ ]*(.+)[ ]*uptime').findall(data)
     return hostname, version, sn, image, model
 
 
@@ -52,7 +63,8 @@ asset_map = {
     'cisco_ios': cisco_ios_parse,
     'cisco_nxos': cisco_ios_parse,
     'cisco_asa': cisco_asa_parse,
-    'hp_comware': hp_comware_parse
+    'hp_comware': hp_comware_parse,
+    'huawei': huawei_parse
 }
 
 

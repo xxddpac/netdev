@@ -20,6 +20,7 @@ asset_command = {
     'cisco_nxos': ['show ver'],
     'cisco_asa': ['show ver'],
     'hp_comware': ['dis cu | in sysname', 'dis version', 'dis dev man'],
+    'huawei': ['dis cu | in sysname', 'dis version', 'dis dev man'],
 }
 
 
