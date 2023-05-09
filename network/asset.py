@@ -14,7 +14,8 @@ def cisco_ios_parse(data):
     sn = re.compile(r'System serial number.*?:.*?(\w+)').findall(data)
     image = re.compile(r'System\simage\sfile\sis\s"([^ "]+)').findall(data)
     model = re.compile(r'[Cc]isco\s(\S+).*memory.').findall(data)
-    return hostname, version, sn, image, model
+    uptime = re.compile(r'.*?uptime is[ ]*(.+)').findall(data)
+    return hostname, version, sn, image, model, uptime
 
 
 def cisco_nxos_parse(data):
@@ -23,7 +24,8 @@ def cisco_nxos_parse(data):
     sn = re.compile(r'Processor Board ID.*?(\w+)').findall(data)
     image = re.compile(r'[n|N]XOS image file is.*?(\w.+)').findall(data)
     model = re.compile(r'(cisco.*?[n|N]exus.+)').findall(data)
-    return hostname, version, sn, image, model
+    uptime = re.compile(r'.*?uptime is[ ]*(.+)').findall(data)
+    return hostname, version, sn, image, model, uptime
 
 
 def cisco_asa_parse(data):
@@ -34,7 +36,8 @@ def cisco_asa_parse(data):
     sn = re.compile(r'Serial Number.*?(\w+)').findall(data)
     image = re.compile(r'System image.*?"(.+)"').findall(data)
     model = re.compile(r'Hardware:[ ]*(\w+),').findall(data)
-    return hostname, version, sn, image, model
+    uptime = re.compile(r'.*?up[ ]*(\d.+)').findall(data)
+    return hostname, version, sn, image, model, uptime
 
 
 def hp_comware_parse(data):
@@ -45,7 +48,8 @@ def hp_comware_parse(data):
         sn = [sn[0]]
     image = re.compile(r'System image:[ ]*(.+)').findall(data)
     model = re.compile(r'H3C[ ]*(\S+).*?uptime').findall(data)
-    return hostname, version, sn, image, model
+    uptime = re.compile(r'.*?uptime is[ ]*(.+)').findall(data)
+    return hostname, version, sn, image, model, uptime
 
 
 def huawei_parse(data):
@@ -56,7 +60,8 @@ def huawei_parse(data):
         sn = [sn[0]]
     image = re.compile(r'VRP.*?software.*?Version[ ]*(.+)').findall(data)
     model = re.compile(r'HUAWEI[ ]*(.+)[ ]*uptime').findall(data)
-    return hostname, version, sn, image, model
+    uptime = re.compile(r'.*?uptime is[ ]*(.+)').findall(data)
+    return hostname, version, sn, image, model, uptime
 
 
 asset_map = {
@@ -69,8 +74,9 @@ asset_map = {
 
 
 def parse(ip, vendor, data):
-    hostname, version, sn, image, model = asset_map[vendor](data)
+    hostname, version, sn, image, model, uptime = asset_map[vendor](data)
     asset_list.append({
         'ip': ip, 'hostname': ','.join(hostname), 'vendor': vendor,
-        'os': ','.join(image), 'version': ','.join(version), 'sn': ','.join(sn), 'model': ','.join(model)
+        'os': ','.join(image), 'version': ','.join(version),
+        'sn': ','.join(sn), 'model': ','.join(model), 'uptime': ' | '.join(uptime)
     })
