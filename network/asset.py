@@ -64,12 +64,26 @@ def huawei_parse(data):
     return hostname, version, sn, image, model, uptime
 
 
+def hillstone_parse(data):
+    if len(data['result']) != 1:
+        return
+    result = data['result'][0]
+    hostname = result['host_name']
+    version = result['sw_version']
+    sn = result['sn_number']
+    image = result['sw_bootfile']
+    model = result['hw_platform']
+    uptime = result['up_time']
+    return [hostname], [version], [sn], [image], [model], [uptime]
+
+
 asset_map = {
     'cisco_ios': cisco_ios_parse,
     'cisco_nxos': cisco_ios_parse,
     'cisco_asa': cisco_asa_parse,
     'hp_comware': hp_comware_parse,
-    'huawei': huawei_parse
+    'huawei': huawei_parse,
+    'hillstone': hillstone_parse
 }
 
 

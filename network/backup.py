@@ -67,15 +67,20 @@ def do(q):
         command = info['command']
         path = info['path']
         try:
+            asset = ''
             if vendor == 'fortigate':
-                FortiGate(host, username, password, path, port=port).save()
+                f = FortiGate(host, username, password, path, port=port)
+                f.save()
             elif vendor == 'hillstone':
-                Hillstone(host, username, password, path, port=port).save()
+                h = Hillstone(host, username, password, path, port=port)
+                asset = h.system()
+                h.save()
             elif vendor == 'checkpoint':
                 with Checkpoint(host, username, password, path, port=port) as cp:
                     cp.save()
             elif vendor == 'paloalto':
-                Paloalto(host, username, password, path, port=port).save()
+                p = Paloalto(host, username, password, path, port=port)
+                p.save()
             else:
                 connect = ConnectHandler(
                     device_type=vendor,
@@ -86,12 +91,11 @@ def do(q):
                     port=port
                 )
                 result = connect.send_command(command, read_timeout=160)  # 读取配置超时时间
-                asset = ''
                 for _command in asset_command[vendor]:
                     asset += '%s\n' % connect.send_command(_command, read_timeout=160)
                 connect.disconnect()
-                parse(host, vendor, asset)
                 save(path, host, result)
+            parse(host, vendor, asset)
         except Exception as err:
             failed_list.append(host)
             logger('config_backup').error('host:%s error:%s\n' % (host, err))
