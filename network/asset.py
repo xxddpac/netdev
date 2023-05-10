@@ -101,7 +101,10 @@ asset_map = {
 
 def parse(ip, vendor, data):
     logger('asset').info('ip:%s,vendor:%s,data:%s' % (ip, vendor, data))
-    hostname, version, sn, image, model, uptime = asset_map[vendor](data)
+    _map = asset_map.get(vendor, None)
+    if not _map:
+        return
+    hostname, version, sn, image, model, uptime = _map(data)
     asset_list.append({
         'ip': ip, 'hostname': ','.join(hostname), 'vendor': vendor,
         'os': ','.join(image), 'version': ','.join(version),
