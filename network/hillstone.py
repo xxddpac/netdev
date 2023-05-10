@@ -68,7 +68,7 @@ class Hillstone(object):
     def system(self):
         path = 'api/sysinfo'
         response = requests.get('%s%s' % (self.base_url, path), headers=self.headers,
-                                 verify=False).json()
+                                verify=False).json()
         if not response['success']:
             raise NetDevException('get system info err')
         return response

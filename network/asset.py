@@ -5,6 +5,8 @@
 
 import re
 
+from log import logger
+
 asset_list = []
 
 
@@ -77,17 +79,28 @@ def hillstone_parse(data):
     return [hostname], [version], [sn], [image], [model], [uptime]
 
 
+def paloalto_parse(data):
+    uptime = data.xpath('//uptime')[0].text
+    hostname = data.xpath('//devicename')[0].text
+    model = data.xpath('//model')[0].text
+    sn = data.xpath('//serial')[0].text
+    version = data.xpath('//sw-version')[0].text
+    return [hostname], [version], [sn], ['panos'], [model], [uptime]
+
+
 asset_map = {
     'cisco_ios': cisco_ios_parse,
     'cisco_nxos': cisco_ios_parse,
     'cisco_asa': cisco_asa_parse,
     'hp_comware': hp_comware_parse,
     'huawei': huawei_parse,
-    'hillstone': hillstone_parse
+    'hillstone': hillstone_parse,
+    'paloalto': paloalto_parse
 }
 
 
 def parse(ip, vendor, data):
+    logger('asset').info('ip:%s,vendor:%s,data:%s' % (ip, vendor, data))
     hostname, version, sn, image, model, uptime = asset_map[vendor](data)
     asset_list.append({
         'ip': ip, 'hostname': ','.join(hostname), 'vendor': vendor,

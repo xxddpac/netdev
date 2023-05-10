@@ -30,3 +30,12 @@ class Paloalto(object):
         result = requests.get(self.base_url, params=params, verify=False)
         with open(r'%s/%s.xml' % (self.path, self.host), 'w') as files:
             files.write(str(result.content, 'utf-8'))
+
+    def system(self):
+        params = {
+            'type': 'op',
+            'cmd': '<show><system><info></info></system></show>',
+            'key': self.key
+        }
+        response = requests.get(self.base_url, params=params, verify=False)
+        return etree.HTML(response.content)

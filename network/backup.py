@@ -80,6 +80,7 @@ def do(q):
                     cp.save()
             elif vendor == 'paloalto':
                 p = Paloalto(host, username, password, path, port=port)
+                asset = p.system()
                 p.save()
             else:
                 connect = ConnectHandler(
