@@ -58,7 +58,8 @@ class Cve(object):
                     # 首次同步30条CVE缓存在本地不发送通知
                     continue
                 notify_cve_list.append(item)
-
+        if not notify_cve_list:
+            return
         for item in notify_cve_list:
             avd = item[0].replace('CVE', 'AVD')
             detail_query_url = '%s?id=%s' % (self.avd_detail_url, avd)

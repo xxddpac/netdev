@@ -1,4 +1,5 @@
 import requests, urllib3
+from utils import NetDevException
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -20,10 +21,7 @@ class FortiGate(object):
 
         request = self.login().get(url, verify=self.verify, timeout=self.timeout)
         self.logout()
-        if request.status_code == 200:
-            return request
-        else:
-            return request.status_code
+        return request
 
     def login(self):
 
@@ -49,9 +47,10 @@ class FortiGate(object):
 
     def save(self):
         result = self.backup()
+        if result.status_code != 200:
+            raise NetDevException('%s--->%s' % (self.ipaddr, result.text))
         with open('%s/%s.txt' % (self.path, self.ipaddr), 'wb') as f:
-            for line in result:
-                f.write(line)
+            f.write(result.text.encode())
 
     def backup(self):
         api_url = self.urlbase + 'api/v2/monitor/system/config/backup?scope=global'
